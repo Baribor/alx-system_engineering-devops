@@ -1,0 +1,1 @@
+This repo contains scripts that illustrate various basic commands used in a shell environment.
