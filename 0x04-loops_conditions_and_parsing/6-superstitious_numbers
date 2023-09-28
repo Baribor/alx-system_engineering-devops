@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+#  script that loops from 1 to 10
+n=1
+
+while [ $n -le 20 ];
+do
+	case $n in
+	4) echo "bad luck from China"
+	;;
+	9) echo "bad luck from Japan"
+	;;
+	17) echo "bad luck from Italy"
+	;;
+	*) echo $n
+	;;
+	esac
+	((n++))
+done
