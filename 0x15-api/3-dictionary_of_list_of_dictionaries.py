@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 """ Gathers data from an API
 """
-import requests
-import os
 import json
+import os
+import requests
 
 BASE = 'https://jsonplaceholder.typicode.com'
 
@@ -34,7 +34,7 @@ def getEmployeeData():
             )
         data[f'{emp.get("id")}'] = formatted_todos
 
-    print(json.dumps(data), file=open(filename, 'a'))
+    print(json.dumps(data), file=open(filename, 'a'), end='')
 
 
 if __name__ == '__main__':

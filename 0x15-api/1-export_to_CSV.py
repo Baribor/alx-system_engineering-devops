@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 """ Gathers data from an API
 """
+import os
 import requests
 import sys
-import os
 
 BASE = 'https://jsonplaceholder.typicode.com'
 
@@ -27,7 +27,6 @@ def getEmployeeData(id):
             todo.get('completed'),
             todo.get('title')
         ), file=open(filename, 'a'))
-
 
 if __name__ == '__main__':
     id = int(sys.argv[1])
