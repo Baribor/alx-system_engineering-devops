@@ -1,31 +1,14 @@
 #!/usr/bin/python3
-""" Gathers data from an API
-"""
+"""Returns to-do list information for a given employee ID."""
 import requests
 import sys
 
-BASE = 'https://jsonplaceholder.typicode.com'
+if __name__ == "__main__":
+    url = "https://jsonplaceholder.typicode.com/"
+    user = requests.get(url + "users/{}".format(sys.argv[1])).json()
+    todos = requests.get(url + "todos", params={"userId": sys.argv[1]}).json()
 
-
-def getEmployeeData(id):
-    """Displays an employee's detail
-
-    Args:
-        id (integer): Id of the employee
-    """
-    emp = requests.get(f'{BASE}/users/{id}').json()
-    todos = requests.get(f'{BASE}/todos?userId={id}').json()
-    completed_todos = list(filter(lambda t: t['completed'], todos))
-    print(
-        'Employeee {} is done with tasks({}/{}):'.format(
-            emp.get('name'),
-            len(completed_todos),
-            len(todos)
-        ))
-    for todo in completed_todos:
-        print(f"\t {todo['title']}")
-
-
-if __name__ == '__main__':
-    id = int(sys.argv[1])
-    getEmployeeData(id)
+    completed = [t.get("title") for t in todos if t.get("completed") is True]
+    print("Employee {} is done with tasks({}/{}):".format(
+        user.get("name"), len(completed), len(todos)))
+    [print("\t {}".format(c)) for c in completed]

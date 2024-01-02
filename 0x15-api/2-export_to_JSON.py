@@ -1,39 +1,19 @@
 #!/usr/bin/python3
-""" Gathers data from an API
-"""
+"""Exports to-do list information for a given employee ID to JSON format."""
 import json
-import os
 import requests
 import sys
 
-BASE = 'https://jsonplaceholder.typicode.com'
+if __name__ == "__main__":
+    user_id = sys.argv[1]
+    url = "https://jsonplaceholder.typicode.com/"
+    user = requests.get(url + "users/{}".format(user_id)).json()
+    username = user.get("username")
+    todos = requests.get(url + "todos", params={"userId": user_id}).json()
 
-
-def getEmployeeData(id):
-    """Saves an employee's detail to json file
-
-    Args:
-        id (integer): Id of the employee
-    """
-    filename = f'{id}.json'
-    if os.path.exists(filename):
-        os.remove(filename)
-
-    emp = requests.get(f'{BASE}/users/{id}').json()
-    todos = requests.get(f'{BASE}/todos?userId={id}').json()
-    formatted_todos = []
-    for todo in todos:
-        formatted_todos.append(
-            {
-                "task": todo.get('title'),
-                "completed": todo.get('completed'),
-                "username": emp.get('username')
-            }
-        )
-    data = {f'{id}': formatted_todos}
-    print(json.dumps(data), file=open(filename, 'a'), end='')
-
-
-if __name__ == '__main__':
-    id = int(sys.argv[1])
-    getEmployeeData(id)
+    with open("{}.json".format(user_id), "w") as jsonfile:
+        json.dump({user_id: [{
+                "task": t.get("title"),
+                "completed": t.get("completed"),
+                "username": username
+            } for t in todos]}, jsonfile)

@@ -1,41 +1,18 @@
 #!/usr/bin/python3
-""" Gathers data from an API
-"""
+"""Exports to-do list information of all employees to JSON format."""
 import json
-import os
 import requests
 
-BASE = 'https://jsonplaceholder.typicode.com'
+if __name__ == "__main__":
+    url = "https://jsonplaceholder.typicode.com/"
+    users = requests.get(url + "users").json()
 
-
-def getEmployeeData():
-    """Saves an employees detail to json file
-
-    Args:
-        id (integer): Id of the employee
-    """
-    filename = 'todo_all_employees.json'
-    if os.path.exists(filename):
-        os.remove(filename)
-
-    emps = requests.get(f'{BASE}/users').json()
-    data = {}
-
-    for emp in emps:
-        formatted_todos = []
-        todos = requests.get(f'{BASE}/todos?userId={emp.get("id")}').json()
-        for todo in todos:
-            formatted_todos.append(
-                {
-                    "task": todo.get('title'),
-                    "completed": todo.get('completed'),
-                    "username": emp.get('username')
-                }
-            )
-        data[f'{emp.get("id")}'] = formatted_todos
-
-    print(json.dumps(data), file=open(filename, 'a'), end='')
-
-
-if __name__ == '__main__':
-    getEmployeeData()
+    with open("todo_all_employees.json", "w") as jsonfile:
+        json.dump({
+            u.get("id"): [{
+                "task": t.get("title"),
+                "completed": t.get("completed"),
+                "username": u.get("username")
+            } for t in requests.get(url + "todos",
+                                    params={"userId": u.get("id")}).json()]
+            for u in users}, jsonfile)
